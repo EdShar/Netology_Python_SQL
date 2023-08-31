@@ -122,16 +122,53 @@ class DB:
             """, (id_client, ))
             self.connection.commit()
 
-    def find_client(self, first_name=None, last_name=None, email=None, phone_numbers=None):
+    def find_client(self, first_name=None, surname=None, email=None, phone_numbers=None):
         if phone_numbers is not None:
             with self.connection.cursor() as cur:
                 cur.execute("""
                         SELECT first_name, surname, email, phone_number
                         FROM phone_number pn 
                         JOIN client c on pn.id_client = c.id_client
-                        WHERE c.id_client = %s;
+                        WHERE phone_number = %s;
                 """, (phone_numbers, ))
-                print(cur.fetchall())
+                for name, surname, email, phone in cur.fetchall():
+                    print(f'Имя: {name}, Фамилия: {surname}, Email: {email}, Телефон: {phone}')
+                self.connection.commit()
+
+        if email is not None:
+            with self.connection.cursor() as cur:
+                cur.execute("""
+                        SELECT first_name, surname, email, phone_number
+                        FROM phone_number pn 
+                        JOIN client c on pn.id_client = c.id_client
+                        WHERE email = %s;
+                """, (email, ))
+                for name, surname, email, phone in cur.fetchall():
+                    print(f'Имя: {name}, Фамилия: {surname}, Email: {email}, Телефон: {phone}')
+                self.connection.commit()
+
+        if surname is not None:
+            with self.connection.cursor() as cur:
+                cur.execute("""
+                        SELECT first_name, surname, email, phone_number
+                        FROM phone_number pn 
+                        JOIN client c on pn.id_client = c.id_client
+                        WHERE surname = %s;
+                """, (surname, ))
+                for name, surname, email, phone in cur.fetchall():
+                    print(f'Имя: {name}, Фамилия: {surname}, Email: {email}, Телефон: {phone}')
+                self.connection.commit()
+
+        if first_name is not None:
+            with self.connection.cursor() as cur:
+                cur.execute("""
+                        SELECT first_name, surname, email, phone_number
+                        FROM phone_number pn 
+                        JOIN client c on pn.id_client = c.id_client
+                        WHERE first_name = %s;
+                """, (first_name, ))
+                for name, surname, email, phone in cur.fetchall():
+                    print(f'Имя: {name}, Фамилия: {surname}, Email: {email}, Телефон: {phone}')
                 self.connection.commit()
 
 
@@ -143,5 +180,5 @@ if __name__ == '__main__':
     #ClientDB.delete_phone_client(12, '81234445566')
     #ClientDB.add_phone_to_client(12, '81234445566')
     #ClientDB.set_data_client(12, first_name='Евгений', surname=None, email='evgeniypupkin@ya.ru', phone_numbers='80000000000')
-    ClientDB.find_client(first_name=None, last_name=None, email=None, phone_numbers='80000000000')
+    #ClientDB.find_client(first_name=None, surname='Пупкин', email=None, phone_numbers=None)
     ClientDB.connection.close()
